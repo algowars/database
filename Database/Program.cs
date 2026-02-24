@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using DbUp;
 
-var connectionString = args.FirstOrDefault() 
-                       ?? throw new ArgumentException("Connection string required");
+string connectionString =
+    args.FirstOrDefault() ?? throw new ArgumentException("Connection string required");
 
-var upgrader = DeployChanges.To
-    .PostgresqlDatabase(connectionString)
+var upgrader = DeployChanges
+    .To.PostgresqlDatabase(connectionString)
     .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
     .LogToConsole()
     .Build();
