@@ -11,6 +11,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Scripts\" />
+    <Folder Include="Bootstrap\" />
+    <Folder Include="Fixtures\" />
+    <Folder Include="Reference\" />
+    <Folder Include="Schema\" />
+    <Folder Include="System\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Bootstrap\**\*.sql" />
+    <EmbeddedResource Include="Fixtures\**\*.sql" />
+    <EmbeddedResource Include="Reference\**\*.sql" />
+    <EmbeddedResource Include="Schema\**\*.sql" />
+    <EmbeddedResource Include="System\**\*.sql" />
   </ItemGroup>
 </Project>
