@@ -1,22 +1,21 @@
-INSERT INTO programming_languages (name)
+INSERT INTO programming_languages (id, name)
 VALUES
-    ('JavaScript'),
-    ('TypeScript'),
-    ('Python')
+    (1, 'JavaScript'),
+    (2, 'TypeScript'),
+    (3, 'Python')
 ON CONFLICT (name) DO UPDATE
 SET name = EXCLUDED.name;
 
 
-
-WITH source(language, version, initial_code) AS (
+WITH source(id, language, version, initial_code) AS (
     VALUES
-    ('JavaScript', 'Node.js 22.08.0', 'function solution() {
+    (1, 'JavaScript', 'Node.js 22.08.0', 'function solution() {
 
 }'),
-    ('TypeScript', '5.6.2', 'function solution(): void {
+    (2, 'TypeScript', '5.6.2', 'function solution(): void {
 
 }'),
-    ('Python', '3.14.0', 'def solution():
+    (3, 'Python', '3.14.0', 'def solution():
 ')
 )
 INSERT INTO programming_language_versions (programming_language_id, version, initial_code)

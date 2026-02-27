@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using DbUp;
 
 string connectionString =
@@ -9,69 +11,90 @@ bool runFixtures = args.Contains("--dev");
 
 var assembly = Assembly.GetExecutingAssembly();
 
-string[] allResources = assembly.GetManifestResourceNames();
-Console.WriteLine("All embedded resources:");
-foreach (string res in allResources)
-{
-    Console.WriteLine(res);
-}
-
-var schemaScripts = allResources.Where(r => r.Contains(".Schema."));
-var referenceScripts = allResources.Where(r => r.Contains(".Reference."));
-var systemScripts = allResources.Where(r => r.Contains(".System."));
-
-Console.WriteLine("\nSchema Scripts:");
-foreach (string? s in schemaScripts)
-{
-    Console.WriteLine(s);
-}
-
-Console.WriteLine("\nReference Scripts:");
-foreach (string? s in referenceScripts)
-{
-    Console.WriteLine(s);
-}
-
-Console.WriteLine("\nSystem Scripts:");
-foreach (string? s in systemScripts)
-{
-    Console.WriteLine(s);
-}
-
-var upgraderBuilder = DeployChanges
+var upgraderSchema = DeployChanges
     .To.PostgresqlDatabase(connectionString)
     .LogToConsole()
-    .WithScriptsEmbeddedInAssembly(
-        assembly,
-        s => s.Contains(".Schema.") || s.Contains(".Reference.") || s.Contains(".System.")
-    );
+    .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Schema."))
+    .Build();
+
+var resultSchema = upgraderSchema.PerformUpgrade();
+
+if (!resultSchema.Successful)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(resultSchema.Error);
+    Console.ResetColor();
+    return -1;
+}
+
+var upgraderReference = DeployChanges
+    .To.PostgresqlDatabase(connectionString)
+    .LogToConsole()
+    .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Reference."))
+    .Build();
+
+var resultReference = upgraderReference.PerformUpgrade();
+
+if (!resultReference.Successful)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(resultReference.Error);
+    Console.ResetColor();
+    return -1;
+}
+
+var upgraderSystem = DeployChanges
+    .To.PostgresqlDatabase(connectionString)
+    .LogToConsole()
+    .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".System."))
+    .Build();
+
+var resultSystem = upgraderSystem.PerformUpgrade();
+
+if (!resultSystem.Successful)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(resultSystem.Error);
+    Console.ResetColor();
+    return -1;
+}
 
 if (runBootstrap)
 {
-    upgraderBuilder = upgraderBuilder.WithScriptsEmbeddedInAssembly(
-        assembly,
-        s => s.Contains(".Bootstrap.")
-    );
+    var upgraderBootstrap = DeployChanges
+        .To.PostgresqlDatabase(connectionString)
+        .LogToConsole()
+        .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Bootstrap."))
+        .Build();
+
+    var resultBootstrap = upgraderBootstrap.PerformUpgrade();
+
+    if (!resultBootstrap.Successful)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(resultBootstrap.Error);
+        Console.ResetColor();
+        return -1;
+    }
 }
 
 if (runFixtures)
 {
-    upgraderBuilder = upgraderBuilder.WithScriptsEmbeddedInAssembly(
-        assembly,
-        s => s.Contains(".Fixtures.Dev.")
-    );
-}
+    var upgraderFixtures = DeployChanges
+        .To.PostgresqlDatabase(connectionString)
+        .LogToConsole()
+        .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Fixtures.dev."))
+        .Build();
 
-var upgrader = upgraderBuilder.Build();
+    var resultFixtures = upgraderFixtures.PerformUpgrade();
 
-var result = upgrader.PerformUpgrade();
-
-if (!result.Successful)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine(result.Error);
-    Console.ResetColor();
-    return -1;
+    if (!resultFixtures.Successful)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(resultFixtures.Error);
+        Console.ResetColor();
+        return -1;
+    }
 }
 
 Console.ForegroundColor = ConsoleColor.Green;
