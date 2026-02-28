@@ -14,7 +14,6 @@
     <Folder Include="Bootstrap\" />
     <Folder Include="Fixtures\" />
     <Folder Include="Reference\" />
-    <Folder Include="Schema\" />
     <Folder Include="System\" />
   </ItemGroup>
 

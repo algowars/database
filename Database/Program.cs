@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using DbUp;
+using DbUp.Engine;
+using DbUp.Helpers;
 
 string connectionString =
     args.FirstOrDefault() ?? throw new ArgumentException("Connection string required");
@@ -30,6 +32,7 @@ if (!resultSchema.Successful)
 var upgraderReference = DeployChanges
     .To.PostgresqlDatabase(connectionString)
     .LogToConsole()
+    .JournalTo(new NullJournal())
     .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Reference."))
     .Build();
 
@@ -46,6 +49,7 @@ if (!resultReference.Successful)
 var upgraderSystem = DeployChanges
     .To.PostgresqlDatabase(connectionString)
     .LogToConsole()
+    .JournalTo(new NullJournal())
     .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".System."))
     .Build();
 
@@ -64,6 +68,7 @@ if (runBootstrap)
     var upgraderBootstrap = DeployChanges
         .To.PostgresqlDatabase(connectionString)
         .LogToConsole()
+        .JournalTo(new NullJournal())
         .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Bootstrap."))
         .Build();
 
@@ -83,6 +88,7 @@ if (runFixtures)
     var upgraderFixtures = DeployChanges
         .To.PostgresqlDatabase(connectionString)
         .LogToConsole()
+        .JournalTo(new NullJournal())
         .WithScriptsEmbeddedInAssembly(assembly, s => s.Contains(".Fixtures.dev."))
         .Build();
 
