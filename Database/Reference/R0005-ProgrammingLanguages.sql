@@ -1,3 +1,4 @@
+
 INSERT INTO programming_languages (id, name)
 VALUES
     (1, 'JavaScript'),
@@ -5,7 +6,6 @@ VALUES
     (3, 'Python')
 ON CONFLICT (name) DO UPDATE
 SET name = EXCLUDED.name;
-
 
 WITH source(id, language, version, initial_code) AS (
     VALUES
@@ -18,8 +18,9 @@ WITH source(id, language, version, initial_code) AS (
     (3, 'Python', '3.14.0', 'def solution():
 ')
 )
-INSERT INTO programming_language_versions (programming_language_id, version, initial_code)
+INSERT INTO programming_language_versions (id, programming_language_id, version, initial_code)
 SELECT
+    s.id,
     l.id,
     s.version,
     s.initial_code
