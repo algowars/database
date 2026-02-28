@@ -27,4 +27,4 @@ jobs:
         env:
           CONNECTION_STRING: ${{ secrets.DEV_CONNECTION_STRING }}
         run: |
-          dotnet run --project ./path/to/your/project.csproj "${CONNECTION_STRING}" --dev
+          dotnet run --project ./Database/Database.csproj "${CONNECTION_STRING}" --dev
