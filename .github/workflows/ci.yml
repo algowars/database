@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-run:
+  build-and-run-dev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,8 +24,8 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run migration
+      - name: Run dev fixtures (migration + --dev)
         env:
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
         run: |
-          dotnet run --project ./path/to/your/project.csproj "${CONNECTION_STRING}"
+          dotnet run --project ./path/to/your/project.csproj "${CONNECTION_STRING}" --dev
