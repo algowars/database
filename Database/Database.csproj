@@ -1,18 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="dbup-postgresql" Version="7.0.1" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="dbup-postgresql" Version="7.0.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Bootstrap\" />
+    <Folder Include="Fixtures\" />
+    <Folder Include="Reference\" />
+    <Folder Include="System\" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Scripts\" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <EmbeddedResource Include="Bootstrap\**\*.sql" />
+    <EmbeddedResource Include="Fixtures\**\*.sql" />
+    <EmbeddedResource Include="Reference\**\*.sql" />
+    <EmbeddedResource Include="Schema\**\*.sql" />
+    <EmbeddedResource Include="System\**\*.sql" />
+  </ItemGroup>
 </Project>

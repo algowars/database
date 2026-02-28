@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-run-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run dev fixtures (migration + --dev)
+        env:
+          CONNECTION_STRING: ${{ secrets.DEV_CONNECTION_STRING }}
+        run: |
+          dotnet run --project ./path/to/your/project.csproj "${CONNECTION_STRING}" --dev
