@@ -1,7 +1,7 @@
-INSERT INTO harness_templates (id, template)
+INSERT INTO harness_templates (id, name, template)
 VALUES
 (
-1,'{{USER_CODE}}
+1,'JavaScript/TypeScript Template','{{USER_CODE}}
 
 process.stdin.on("data", data => {
     const args = JSON.parse(data.toString());
@@ -10,7 +10,7 @@ process.stdin.on("data", data => {
 });'
 ),
 (
-2,'{{USER_CODE}}
+2,'Python Template','{{USER_CODE}}
 
 import sys
 import json
@@ -20,5 +20,5 @@ args = json.loads(data)
 result = {{FUNCTION_NAME}}(*args)
 print(result);'
 )
-ON CONFLICT (template) DO UPDATE
+ON CONFLICT (id) DO UPDATE
 SET template = EXCLUDED.template;
