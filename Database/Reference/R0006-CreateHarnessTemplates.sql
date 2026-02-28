@@ -1,7 +1,7 @@
-INSERT INTO harness_templates (template)
+INSERT INTO harness_templates (id, template)
 VALUES
 (
-'{{USER_CODE}}
+1,'{{USER_CODE}}
 
 process.stdin.on("data", data => {
     const args = JSON.parse(data.toString());
@@ -10,7 +10,7 @@ process.stdin.on("data", data => {
 });'
 ),
 (
-'{{USER_CODE}}
+2,'{{USER_CODE}}
 
 import sys
 import json
