@@ -22,7 +22,7 @@ Output: "hello"
 **Constraints:**
 - -10^9 <= n <= 10^9',
     500,
-    1,
+    3,
     1,
     NOW(),
     NULL
