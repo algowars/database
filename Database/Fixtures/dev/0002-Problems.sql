@@ -5,22 +5,22 @@ VALUES (
     gen_random_uuid(),
     'Hello or Goodbye',
     'hello-or-goodbye',
-    '## Hello or Goodbye
-
-Given an integer `n`, return `"hello"` if `n` is **even**, otherwise return `"goodbye"`.
+    'Given an integer `n`, return `"hello"` if `n` is **even**, otherwise return `"goodbye"`.
 
 **Example 1:**
 
-Input: n = 3
-Output: "goodbye"
+> **Input**: `n = 3`
+> **Output**: `"goodbye"`
 
 **Example 2:**
 
-Input: n = 10
-Output: "hello"
+> **Input**: `n = 10`
+> **Output**: `"hello"`
 
 **Constraints:**
-- -10^9 <= n <= 10^9',
+
+- `-10^9 <= n <= 10^9`
+',
     500,
     3,
     1,
