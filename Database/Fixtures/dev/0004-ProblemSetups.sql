@@ -6,7 +6,10 @@ SELECT
     plv.id,
     1,
     1,
-    plv.initial_code,
+    'function solution(n) {
+  // Your code here
+}
+',
     'solution',
     NOW(),
     NULL
@@ -25,7 +28,10 @@ SELECT
     plv.id,
     1,
     1,
-    plv.initial_code,
+    'function solution(n: number): string {
+  // Your code here
+}
+',
     'solution',
     NOW(),
     NULL
@@ -44,7 +50,9 @@ SELECT
     plv.id,
     2,
     1,
-    plv.initial_code,
+    'def solution(n: int) -> str:
+    # Your code here
+',
     'solution',
     NOW(),
     NULL
