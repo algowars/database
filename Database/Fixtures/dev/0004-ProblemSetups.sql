@@ -62,3 +62,15 @@ FROM problems p
                   AND plv.version = '3.14.0'
 WHERE p.slug = 'hello-or-goodbye'
     ON CONFLICT (problem_id, programming_language_version_id) DO NOTHING;
+
+INSERT INTO problem_setup_test_suites (problem_setup_id, test_suite_id)
+SELECT ps.id, ts.id
+FROM problem_setups ps
+         JOIN problems p ON p.id = ps.problem_id
+         JOIN programming_language_versions plv ON plv.id = ps.programming_language_version_id
+         JOIN programming_languages pl ON pl.id = plv.programming_language_id
+         JOIN test_suites ts ON ts.name = 'Hello or Goodbye hidden tests'
+WHERE p.slug = 'hello-or-goodbye'
+  AND pl.name = 'JavaScript'
+  AND plv.version = 'Node.js 22.08.0'
+ON CONFLICT (problem_setup_id, test_suite_id) DO NOTHING;
