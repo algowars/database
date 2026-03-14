@@ -1,2 +1,2 @@
-﻿ALTER TABLE test_cases_inputs_value_types
-ADD CONSTRAINT uq_test_cases_inputs_value_types_name UNIQUE (name);
+﻿CREATE UNIQUE INDEX IF NOT EXISTS uq_test_cases_inputs_value_types_name
+    ON test_cases_inputs_value_types (name);
