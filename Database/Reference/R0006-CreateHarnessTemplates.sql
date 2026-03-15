@@ -4,9 +4,10 @@ VALUES
 1,'JavaScript/TypeScript Template','{{USER_CODE}}
 
 process.stdin.on("data", data => {
-    const args = JSON.parse(data.toString());
+    const parsed = JSON.parse(data.toString().trim());
+    const args = Array.isArray(parsed) ? parsed : [parsed];
     const result = {{FUNCTION_NAME}}(...args);
-    console.log(result);
+    process.stdout.write(String(result).trim());
 });'
 ),
 (
