@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using DbUp;
-using DbUp.Engine;
 using DbUp.Helpers;
 
-string connectionString =
-    args.FirstOrDefault() ?? throw new ArgumentException("Connection string required");
+int connIndex = Array.IndexOf(args, "--connectionString");
+if (connIndex < 0 || connIndex == args.Length - 1)
+{
+    throw new ArgumentException("Connection string required. Use --connectionString <value>");
+}
+
+string connectionString = args[connIndex + 1];
 
 bool runBootstrap = args.Contains("--init");
 bool runFixtures = args.Contains("--dev");
