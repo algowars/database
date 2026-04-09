@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Bootstrap\" />
     <Folder Include="Fixtures\" />
-    <Folder Include="Reference\" />
     <Folder Include="System\" />
   </ItemGroup>
 
