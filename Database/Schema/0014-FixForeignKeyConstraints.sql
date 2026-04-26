@@ -51,10 +51,19 @@ ADD CONSTRAINT fk_submission_results_status_id
 -- Some versions may lack this; adding it here for consistency
 -- =============================================================================
 
--- Verify created_by_id exists (may already be there in later versions)
--- If not present, add it:
+-- Add all audit columns if they don't exist
 DO $$ 
 BEGIN 
+    -- Add created_on with default
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name='submission_results' AND column_name='created_on'
+    ) THEN
+        ALTER TABLE submission_results 
+            ADD COLUMN created_on TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    END IF;
+
+    -- Add created_by_id
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns 
         WHERE table_name='submission_results' AND column_name='created_by_id'
@@ -63,6 +72,35 @@ BEGIN
             ADD COLUMN created_by_id UUID NULL,
             ADD CONSTRAINT fk_submission_results_created_by
                 FOREIGN KEY (created_by_id) REFERENCES accounts(id) ON DELETE SET NULL;
+    END IF;
+
+    -- Add last_modified_on
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name='submission_results' AND column_name='last_modified_on'
+    ) THEN
+        ALTER TABLE submission_results 
+            ADD COLUMN last_modified_on TIMESTAMPTZ NULL;
+    END IF;
+
+    -- Add last_modified_by_id
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name='submission_results' AND column_name='last_modified_by_id'
+    ) THEN
+        ALTER TABLE submission_results 
+            ADD COLUMN last_modified_by_id UUID NULL,
+            ADD CONSTRAINT fk_submission_results_last_modified_by
+                FOREIGN KEY (last_modified_by_id) REFERENCES accounts(id) ON DELETE SET NULL;
+    END IF;
+
+    -- Add deleted_on for soft delete support
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name='submission_results' AND column_name='deleted_on'
+    ) THEN
+        ALTER TABLE submission_results 
+            ADD COLUMN deleted_on TIMESTAMPTZ NULL;
     END IF;
 END $$;
 
