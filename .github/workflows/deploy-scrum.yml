@@ -1,0 +1,44 @@
+name: Deploy Scrum
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_bootstrap:
+        description: "Run bootstrap seeds (--init)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-scrum
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: scrum
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run migrations and seeds
+        run: |
+          ARGS="--connectionString \"${{ secrets.CONNECTION_STRING }}\""
+          if [ "${{ inputs.run_bootstrap }}" = "true" ]; then
+            ARGS="$ARGS --init"
+          fi
+          eval dotnet run --project ./Database/Database.csproj --configuration Release --no-build -- $ARGS
