@@ -37,7 +37,7 @@ jobs:
 
       - name: Run migrations and seeds
         run: |
-          ARGS="--connectionString \"${{ secrets.DATABASE_CONNECTION_STRING }}\""
+          ARGS="--connectionString \"${{ secrets.CONNECTION_STRING }}\""
           if [ "${{ inputs.run_bootstrap }}" = "true" ]; then
             ARGS="$ARGS --init"
           fi
