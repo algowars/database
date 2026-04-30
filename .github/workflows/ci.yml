@@ -4,10 +4,40 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-run-dev:
+  build-and-validate-migrations:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGPASSWORD: postgres
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,8 +53,24 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run dev fixtures (migration + --dev)
-        env:
-          CONNECTION_STRING: ${{ secrets.DEV_CONNECTION_STRING }}
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for PostgreSQL
         run: |
-          dotnet run --project ./Database/Database.csproj "${CONNECTION_STRING}" --dev
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            sleep 1
+          done
+
+      - name: Create CI databases
+        run: |
+          psql -h localhost -U postgres -d postgres -c "CREATE DATABASE algowars_ci;"
+          psql -h localhost -U postgres -d postgres -c "CREATE DATABASE algowars_ci_full;"
+
+      - name: Validate schema/reference/system migrations
+        run: |
+          dotnet run --project ./Database/Database.csproj --configuration Release --no-build --connectionString "Host=localhost;Port=5432;Database=algowars_ci;Username=postgres;Password=postgres"
+
+      - name: Validate bootstrap and dev fixtures
+        run: |
+          dotnet run --project ./Database/Database.csproj --configuration Release --no-build --connectionString "Host=localhost;Port=5432;Database=algowars_ci_full;Username=postgres;Password=postgres" --init --dev
