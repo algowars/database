@@ -1,6 +1,9 @@
 name: Deploy Scrum
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       run_bootstrap:
