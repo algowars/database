@@ -11,6 +11,9 @@ BEGIN
         WITH value_type AS (
             SELECT id FROM test_cases_inputs_value_types WHERE name = 'integer'
         ),
+        output_value_type AS (
+            SELECT id FROM test_cases_output_value_types WHERE name = 'String'
+        ),
         suite_type_hidden AS (
             SELECT id FROM test_suite_types WHERE name = 'Hidden'
         ),
@@ -72,20 +75,20 @@ BEGIN
             SELECT hidden_tc_bigneg.id, '-1000000000', value_type.id FROM hidden_tc_bigneg, value_type
             RETURNING test_case_id
         )
-        INSERT INTO test_cases_expected_outputs (test_case_id, value, output_type)
-        SELECT hidden_tc0.id, 'hello', 'string' FROM hidden_tc0
+        INSERT INTO test_cases_expected_outputs (test_case_id, value, output_value_type_id)
+        SELECT hidden_tc0.id, 'hello', output_value_type.id FROM hidden_tc0, output_value_type
         UNION ALL
-        SELECT hidden_tc_neg1.id, 'goodbye', 'string' FROM hidden_tc_neg1
+        SELECT hidden_tc_neg1.id, 'goodbye', output_value_type.id FROM hidden_tc_neg1, output_value_type
         UNION ALL
-        SELECT hidden_tc_neg10.id, 'hello', 'string' FROM hidden_tc_neg10
+        SELECT hidden_tc_neg10.id, 'hello', output_value_type.id FROM hidden_tc_neg10, output_value_type
         UNION ALL
-        SELECT hidden_tc_101.id, 'goodbye', 'string' FROM hidden_tc_101
+        SELECT hidden_tc_101.id, 'goodbye', output_value_type.id FROM hidden_tc_101, output_value_type
         UNION ALL
-        SELECT hidden_tc_100.id, 'hello', 'string' FROM hidden_tc_100
+        SELECT hidden_tc_100.id, 'hello', output_value_type.id FROM hidden_tc_100, output_value_type
         UNION ALL
-        SELECT hidden_tc_big.id, 'goodbye', 'string' FROM hidden_tc_big
+        SELECT hidden_tc_big.id, 'goodbye', output_value_type.id FROM hidden_tc_big, output_value_type
         UNION ALL
-        SELECT hidden_tc_bigneg.id, 'hello', 'string' FROM hidden_tc_bigneg;
+        SELECT hidden_tc_bigneg.id, 'hello', output_value_type.id FROM hidden_tc_bigneg, output_value_type;
 
     END IF;
 END;
