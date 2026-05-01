@@ -27,7 +27,7 @@ SELECT
     NOW(),
     NULL
 FROM problem_statuses ps
-WHERE ps.name = 'Active'
+WHERE ps.name = 'Published'
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO problem_tags (problem_id, tag_id)
