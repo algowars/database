@@ -71,6 +71,4 @@ FROM problem_setups ps
          JOIN programming_languages pl ON pl.id = plv.programming_language_id
          JOIN test_suites ts ON ts.name = 'Hello or Goodbye hidden tests'
 WHERE p.slug = 'hello-or-goodbye'
-  AND pl.name = 'JavaScript'
-  AND plv.version = 'Node.js 22.08.0'
 ON CONFLICT (problem_setup_id, test_suite_id) DO NOTHING;

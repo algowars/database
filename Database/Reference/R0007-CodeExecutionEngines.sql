@@ -8,9 +8,12 @@ WHERE
 
 WITH source (language, version, engine_name, engine_language_id, engine_language_name) AS (
     VALUES
-        ('JavaScript', 'Node.js 22.08.0', 'judge0', 63, 'JavaScript (Node.js 12.14.0)'),
-        ('TypeScript', '5.6.2',           'judge0', 74, 'TypeScript (5.6.2)'),
-        ('Python',     '3.14.0',          'judge0', 71, 'Python (3.8.1)')
+        ('JavaScript', 'Node.js 22.08.0', 'judge0', 102, 'JavaScript (Node.js 22.08.0)'),
+        ('TypeScript', '5.6.2',           'judge0', 101, 'TypeScript (5.6.2)'),
+        ('Python',     '3.14.0',          'judge0', 113, 'Python (3.14.0)'),
+        ('Java',       '17.0.6',          'judge0', 91,  'Java (JDK 17.0.6)'),
+        ('C++',        '17',              'judge0', 105, 'C++ (GCC 14.1.0)'),
+        ('Go',         '1.23.5',          'judge0', 107, 'Go (1.23.5)')
 )
 INSERT INTO language_version_engine_mappings
     (programming_language_version_id, engine_id, engine_language_id, engine_language_name)
