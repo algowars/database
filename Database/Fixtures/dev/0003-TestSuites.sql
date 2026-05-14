@@ -186,23 +186,88 @@ BEGIN
             RETURNING test_case_id
         )
         INSERT INTO test_cases_expected_outputs (test_case_id, value, output_value_type_id)
-        SELECT tc_3.id, 'fizz', output_value_type.id FROM tc_3, output_value_type
+        SELECT tc_3.id, 'Fizz', output_value_type.id FROM tc_3, output_value_type
         UNION ALL
-        SELECT tc_5.id, 'buzz', output_value_type.id FROM tc_5, output_value_type
+        SELECT tc_5.id, 'Buzz', output_value_type.id FROM tc_5, output_value_type
         UNION ALL
-        SELECT tc_15.id, 'fizzbuzz', output_value_type.id FROM tc_15, output_value_type
+        SELECT tc_15.id, 'FizzBuzz', output_value_type.id FROM tc_15, output_value_type
         UNION ALL
         SELECT tc_7.id, '7', output_value_type.id FROM tc_7, output_value_type
         UNION ALL
-        SELECT tc_0.id, 'fizzbuzz', output_value_type.id FROM tc_0, output_value_type
+        SELECT tc_0.id, 'FizzBuzz', output_value_type.id FROM tc_0, output_value_type
         UNION ALL
-        SELECT tc_neg3.id, 'fizz', output_value_type.id FROM tc_neg3, output_value_type
+        SELECT tc_neg3.id, 'Fizz', output_value_type.id FROM tc_neg3, output_value_type
         UNION ALL
-        SELECT tc_neg5.id, 'buzz', output_value_type.id FROM tc_neg5, output_value_type
+        SELECT tc_neg5.id, 'Buzz', output_value_type.id FROM tc_neg5, output_value_type
         UNION ALL
-        SELECT tc_30.id, 'fizzbuzz', output_value_type.id FROM tc_30, output_value_type
+        SELECT tc_30.id, 'FizzBuzz', output_value_type.id FROM tc_30, output_value_type
         UNION ALL
         SELECT tc_2.id, '2', output_value_type.id FROM tc_2, output_value_type;
+
+    END IF;
+END;
+$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM test_suites WHERE name = 'Fizz or Buzz public tests'
+    ) THEN
+
+        WITH value_type AS (
+            SELECT id FROM test_cases_inputs_value_types WHERE name = 'integer'
+        ),
+        output_value_type AS (
+            SELECT id FROM test_cases_output_value_types WHERE name = 'String'
+        ),
+        suite_type_public AS (
+            SELECT id FROM test_suite_types WHERE name = 'Public'
+        ),
+        public_suite AS (
+            INSERT INTO test_suites (name, description, test_suite_type_id)
+            SELECT 'Fizz or Buzz public tests', 'Public example test cases for Fizz or Buzz', suite_type_public.id
+            FROM suite_type_public
+            RETURNING id
+        ),
+        tc_3 AS (
+            INSERT INTO test_cases (test_suite_id, name, description)
+            SELECT public_suite.id, 'Divisible By Three', 'Input: n = 3' FROM public_suite
+            RETURNING id
+        ),
+        tc_5 AS (
+            INSERT INTO test_cases (test_suite_id, name, description)
+            SELECT public_suite.id, 'Divisible By Five', 'Input: n = 5' FROM public_suite
+            RETURNING id
+        ),
+        tc_15 AS (
+            INSERT INTO test_cases (test_suite_id, name, description)
+            SELECT public_suite.id, 'Divisible By Both', 'Input: n = 15' FROM public_suite
+            RETURNING id
+        ),
+        tc_7 AS (
+            INSERT INTO test_cases (test_suite_id, name, description)
+            SELECT public_suite.id, 'Not Divisible', 'Input: n = 7' FROM public_suite
+            RETURNING id
+        ),
+        inputs AS (
+            INSERT INTO test_cases_inputs (test_case_id, value, test_cases_inputs_value_type_id)
+            SELECT tc_3.id, '3', value_type.id FROM tc_3, value_type
+            UNION ALL
+            SELECT tc_5.id, '5', value_type.id FROM tc_5, value_type
+            UNION ALL
+            SELECT tc_15.id, '15', value_type.id FROM tc_15, value_type
+            UNION ALL
+            SELECT tc_7.id, '7', value_type.id FROM tc_7, value_type
+            RETURNING test_case_id
+        )
+        INSERT INTO test_cases_expected_outputs (test_case_id, value, output_value_type_id)
+        SELECT tc_3.id, 'Fizz', output_value_type.id FROM tc_3, output_value_type
+        UNION ALL
+        SELECT tc_5.id, 'Buzz', output_value_type.id FROM tc_5, output_value_type
+        UNION ALL
+        SELECT tc_15.id, 'FizzBuzz', output_value_type.id FROM tc_15, output_value_type
+        UNION ALL
+        SELECT tc_7.id, '7', output_value_type.id FROM tc_7, output_value_type;
 
     END IF;
 END;
