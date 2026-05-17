@@ -1,3 +1,3 @@
 ALTER TABLE accounts
-    ADD COLUMN previous_username VARCHAR(36),
-    ADD COLUMN username_last_changed_at TIMESTAMP;
+    ADD COLUMN IF NOT EXISTS previous_username VARCHAR(36),
+    ADD COLUMN IF NOT EXISTS username_last_changed_at TIMESTAMP;

@@ -18,8 +18,10 @@ import json
 
 data = sys.stdin.read()
 args = json.loads(data)
+if not isinstance(args, list):
+    args = [args]
 result = {{FUNCTION_NAME}}(*args)
-print(result);'
+print(result)'
 )
 ON CONFLICT (id) DO UPDATE
 SET template = EXCLUDED.template;
